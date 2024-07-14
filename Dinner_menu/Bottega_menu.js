@@ -3,37 +3,52 @@ const menus = {
     desayuno: {
         platos: [
             { nombre: 'Pancakes', precio: 5.99 },
-            { nombre: 'huevos al gusto', precio: 6.99 },
-            { nombre: 'caldo de costilla', precio: 4.99 }
+            { nombre: 'Huevos al gusto', precio: 6.99 },
+            { nombre: 'Caldo de costilla', precio: 4.99 }
         ],
         guarniciones: [
-            { nombre: 'Tostadas', precio: 1.99 },
-            { nombre: 'Fruta', precio: 2.99 },
+            { nombre: 'Muffins', precio: 2.99 },
+            { nombre: 'Pan', precio: 2.99 },
             { nombre: 'Yogurt', precio: 1.99 }
+        ],
+        guarniciones_2: [
+            { nombre: 'Frutas Frescas', precio: 3.00 },
+            { nombre: 'Avena', precio: 2.50 },
+            { nombre: 'Tostadas', precio: 1.99 }
         ]
     },
     almuerzo: {
         platos: [
-            { nombre: 'bandeja paisa', precio: 8.99 },
-            { nombre: 'sancocho de gallina', precio: 7.99 },
-            { nombre: 'arroz con pollo', precio: 6.99 }
+            { nombre: 'Bandeja paisa', precio: 8.99 },
+            { nombre: 'Sancocho de gallina', precio: 7.99 },
+            { nombre: 'Arroz con pollo', precio: 6.99 }
         ],
         guarniciones: [
             { nombre: 'Papas Fritas', precio: 2.99 },
             { nombre: 'Ensalada', precio: 3.99 },
             { nombre: 'Helado', precio: 2.99 }
+        ],
+        guarniciones_2: [
+            { nombre: 'Ensalada Mixta', precio: 3.00 },
+            { nombre: 'Puré de Papas', precio: 2.50 },
+            { nombre: 'Cuscús', precio: 1.99 }
         ]
     },
     cena: {
         platos: [
-            { nombre: 'horse bistec', precio: 10.99 },
-            { nombre: 'pulpo al vapor', precio: 9.99 },
-            { nombre: 'calentado de frijol', precio: 8.99 }
+            { nombre: 'Horse bistec', precio: 10.99 },
+            { nombre: 'Pulpo al vapor', precio: 9.99 },
+            { nombre: 'Calentado de frijol', precio: 8.99 }
         ],
         guarniciones: [
-            { nombre: 'chupito', precio: 3.99 },
-            { nombre: 'cerveza', precio: 4.99 },
-            { nombre: 'vino', precio: 3.99 }
+            { nombre: 'Chupito', precio: 3.99 },
+            { nombre: 'Cerveza', precio: 4.99 },
+            { nombre: 'Vino', precio: 3.99 }
+        ],
+        guarniciones_2: [
+            { nombre: 'Judías Verdes', precio: 3.00 },
+            { nombre: 'Macarrones con Queso', precio: 2.50 },
+            { nombre: 'Espárragos a la Parrilla', precio: 1.99 }
         ]
     }
 };
@@ -72,56 +87,37 @@ function obtenerComentarioAleatorio(comentarios) {
     return comentarios[indice];
 }
 
-// Función para seleccionar un comentario aleatorio de comida
-function obtenerComentarioAleatorios(comentariosHoraComida) {
-    const indices = Math.floor(Math.random() * comentariosHoraComida.length);
-    return comentariosHoraComida[indices];
-}
-
-// Función para mostrar el menú completo
-function mostrarMenu(menu) {
-    let mensaje = 'Menú de Platos Principales:\n';
-    menu.platos.forEach((plato, index) => {
-        mensaje += `${index + 1}. ${plato.nombre} - €${plato.precio.toFixed(2)}\n`;
+// Función para mostrar el menú completo y permitir la selección
+function seleccionarArticulo(menu, tipo, tiempo) {
+    let mensaje = `Menú de ${tiempo.charAt(0).toUpperCase() + tiempo.slice(1)} - ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}:\n\n`;
+    menu.forEach((articulo, index) => {
+        mensaje += `${index + 1}. ${articulo.nombre} - €${articulo.precio.toFixed(2)}\n`;
     });
-    mensaje += '\nMenú de Guarniciones:\n';
-    menu.guarniciones.forEach((guarnicion, index) => {
-        mensaje += `${index + 1}. ${guarnicion.nombre} - €${guarnicion.precio.toFixed(2)}\n`;
-    });
-    alert(mensaje);
-}
 
-// Función para seleccionar un artículo del menú con validación
-function seleccionarArticulo(menu, tipo) {
-    let seleccion = prompt(`Selecciona un ${tipo} (1-${menu.length}):`);
-    if (seleccion === null) {
-        alert("Proceso cancelado.");
-        return null;
-    }
-    
-    let seleccionNumerica = parseInt(seleccion, 10);
-    
+    let seleccionNumerica = NaN;
     while (isNaN(seleccionNumerica) || seleccionNumerica < 1 || seleccionNumerica > menu.length) {
-        alert("Entrada no válida. Por favor, ingresa un número válido dentro del rango del menú.");
-        seleccion = prompt(`Selecciona un ${tipo} (1-${menu.length}):`);
+        let seleccion = prompt(`\n${mensaje}\nSelecciona un ${tipo} (1-${menu.length}):`);
         if (seleccion === null) {
             alert("Proceso cancelado.");
             return null;
         }
         seleccionNumerica = parseInt(seleccion, 10);
+        if (isNaN(seleccionNumerica) || seleccionNumerica < 1 || seleccionNumerica > menu.length) {
+            alert("Entrada no válida. Por favor, ingresa un número válido dentro del rango del menú.");
+        }
     }
 
     const articulo = menu[seleccionNumerica - 1];
-    alert(`Seleccionaste: ${articulo.nombre}\n${obtenerComentarioAleatorio(comentarios)}`);
+    alert(obtenerComentarioAleatorio(comentarios));
     return articulo;
 }
 
 // Función para determinar el momento de la comida basado en la hora ingresada
 function obtenerMomentoComida(hora) {
     const [hours, minutes] = hora.split(':').map(Number);
-    if (hours >= 8 && hours < 10) {
+    if (hours >= 8 && hours <= 10) {
         return 'desayuno';
-    } else if (hours >= 11 && hours < 16) {
+    } else if (hours >= 11 && hours <= 16) {
         return 'almuerzo';
     } else if (hours >= 17 && hours <= 23) {
         return 'cena';
@@ -146,33 +142,31 @@ function ejecutarMenu() {
     }
 
     // Obtener un comentario adecuado para la hora de la comida
-    const comentarioHora = obtenerComentarioAleatorios(comentariosHoraComida[momentoComida]);
+    const comentarioHora = obtenerComentarioAleatorio(comentariosHoraComida[momentoComida]);
     alert(comentarioHora);
 
     const menu = menus[momentoComida];
-    mostrarMenu(menu);
 
     // Selección de plato principal
-    const platoPrincipal = seleccionarArticulo(menu.platos, 'plato principal');
+    const platoPrincipal = seleccionarArticulo(menu.platos, 'plato principal', momentoComida);
     if (!platoPrincipal) return;  // Si el usuario cancela
 
-    alert(`Precio del plato principal: €${platoPrincipal.precio.toFixed(2)}`);
 
     // Selección de guarniciones
-    const guarnicion1 = seleccionarArticulo(menu.guarniciones, 'guarnición');
+    const guarnicion1 = seleccionarArticulo(menu.guarniciones, 'guarnición', momentoComida);
     if (!guarnicion1) return;  // Si el usuario cancela
 
-    alert(`Precio de la primera guarnición: €${guarnicion1.precio.toFixed(2)}`);
 
-    const guarnicion2 = seleccionarArticulo(menu.guarniciones, 'guarnición');
+    const guarnicion2 = seleccionarArticulo(menu.guarniciones_2, 'guarnición', momentoComida);
     if (!guarnicion2) return;  // Si el usuario cancela
 
-    alert(`Precio de la segunda guarnición: €${guarnicion2.precio.toFixed(2)}`);
 
     // Sumar el costo total
-    const costoTotal = platoPrincipal.precio + guarnicion1.precio + guarnicion2.precio;
-    alert(`El costo total de tu comida es: €${costoTotal.toFixed(2)}`);
+   const costoTotal = platoPrincipal.precio + guarnicion1.precio + guarnicion2.precio;
+    alert(`Bottega Fast Food\n\nRecibo venta\n${platoPrincipal.nombre} = €${platoPrincipal.precio}\n${guarnicion1.nombre} = €${guarnicion1.precio}\n${guarnicion2.nombre} = €${guarnicion2.precio} \n\nCosto total: €${costoTotal.toFixed(2)}\nGracias por Visitarnos`);
 }
+
+
 
 // Ejecutar el menú
 ejecutarMenu();
