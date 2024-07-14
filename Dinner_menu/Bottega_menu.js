@@ -115,6 +115,11 @@ function seleccionarArticulo(menu, tipo, tiempo) {
 // Función para determinar el momento de la comida basado en la hora ingresada
 function obtenerMomentoComida(hora) {
     const [hours, minutes] = hora.split(':').map(Number);
+    
+    if (hours < 8 || hours >= 24 || (hours === 23 && minutes > 0) || isNaN(hours) || isNaN(minutes)) {
+        return null;
+    }
+    
     if (hours >= 8 && hours <= 10) {
         return 'desayuno';
     } else if (hours >= 11 && hours <= 16) {
